@@ -1,4 +1,4 @@
-# Fuck Cainiao
+# FuckCainiao
 
 [![GitHub license](https://img.shields.io/github/license/duzhaokun123/FuckCainiao?style=flat-square)](https://github.com/duzhaokun123/FuckCainiao/blob/main/LICENSE)
 ![Android SDK min 24](https://img.shields.io/badge/Android%20SDK-%3E%3D%2024-brightgreen?style=flat-square&logo=android)
@@ -11,9 +11,17 @@
 
 https://github.com/Xposed-Modules-Repo/io.github.duzhaokun123.fuckcainiao
 
+## 效果
+
+|             前              |            后             |
+|:--------------------------:|:------------------------:|
+| ![before](arts/before.png) | ![after](arts/after.png) |
+
 ## Thanks
 
 ### 工具
+
+[jadx](https://github.com/skylot/jadx)
 
 开发者助手专业版(`cn.trinea.android.developertools.pro`)
 

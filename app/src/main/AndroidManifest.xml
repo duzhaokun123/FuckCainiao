@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <application
-        android:label="fuck cainiao"
+        android:label="FuckCainiao"
         android:supportsRtl="true"
         android:theme="@android:style/Theme.DeviceDefault"
         tools:targetApi="31">

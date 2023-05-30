@@ -3,16 +3,12 @@ package io.github.duzhaokun123.fuckcainiao
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
-import android.util.Log
 import android.view.View
 import android.widget.LinearLayout
 import com.github.kyuubiran.ezxhelper.init.EzXHelperInit
 import com.github.kyuubiran.ezxhelper.utils.findAllMethods
 import com.github.kyuubiran.ezxhelper.utils.findMethod
-import com.github.kyuubiran.ezxhelper.utils.getObject
-import com.github.kyuubiran.ezxhelper.utils.getObjectAs
 import com.github.kyuubiran.ezxhelper.utils.hookAfter
-import com.github.kyuubiran.ezxhelper.utils.hookAllConstructorAfter
 import com.github.kyuubiran.ezxhelper.utils.hookBefore
 import com.github.kyuubiran.ezxhelper.utils.hookReplace
 import com.github.kyuubiran.ezxhelper.utils.loadClass
@@ -41,6 +37,14 @@ class XposedInit : IXposedHookLoadPackage {
         loadClass("com.cainiao.wireless.homepage.view.fragment.HomePageRecycleViewFragment").findMethod {
             name == "setCNRecommendViewLayoutParams"
         }.hookReplace { }
+
+
+        loadClass("com.cainiao.wireless.cubex.mvvm.view.CubeXLinearLayoutFragment").findMethod {
+            name == "setEmpty"
+        }.hookBefore {
+            val jsonArray = it.args[1] as MutableList<*>
+            jsonArray.removeAt(1)
+        }
 
         loadClass("com.taobao.cainiao.logistic.ui.view.component.LogisticDetailBannerView").findAllMethods {
             parameterTypes.size == 1 && parameterTypes[0] == loadClass("com.taobao.cainiao.logistic.response.model.LdAdsCommonEntity")
