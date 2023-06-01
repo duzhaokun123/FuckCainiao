@@ -2,7 +2,9 @@ package io.github.duzhaokun123.fuckcainiao
 
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.app.AndroidAppHelper
 import android.content.Context
+import android.util.Log
 import android.view.View
 import android.widget.LinearLayout
 import com.github.kyuubiran.ezxhelper.init.EzXHelperInit
@@ -14,6 +16,7 @@ import com.github.kyuubiran.ezxhelper.utils.hookReplace
 import com.github.kyuubiran.ezxhelper.utils.loadClass
 import de.robv.android.xposed.IXposedHookLoadPackage
 import de.robv.android.xposed.callbacks.XC_LoadPackage
+import java.io.File
 
 class XposedInit : IXposedHookLoadPackage {
     companion object {
@@ -43,7 +46,10 @@ class XposedInit : IXposedHookLoadPackage {
             name == "setEmpty"
         }.hookBefore {
             val jsonArray = it.args[1] as MutableList<*>
-            jsonArray.removeAt(1)
+//            File(AndroidAppHelper.currentApplication().externalCacheDir, "cubex.json").writeText(jsonArray.toString())
+            for (i in jsonArray.size - 1 downTo 1) {
+                jsonArray.removeAt(i)
+            }
         }
 
         loadClass("com.taobao.cainiao.logistic.ui.view.component.LogisticDetailBannerView").findAllMethods {
