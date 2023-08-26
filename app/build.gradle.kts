@@ -6,14 +6,14 @@ plugins {
 
 android {
     namespace = "io.github.duzhaokun123.fuckcainiao"
-    compileSdk = 33
+    compileSdk = 34
 
     defaultConfig {
         applicationId = "io.github.duzhaokun123.fuckcainiao"
         minSdk = 24
-        targetSdk = 33
-        versionCode = 3
-        versionName = "0.0.3"
+        targetSdk = 34
+        versionCode = 4
+        versionName = "0.0.4"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -26,6 +26,7 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+            signingConfig = signingConfigs.getByName("debug")
         }
     }
     compileOptions {
