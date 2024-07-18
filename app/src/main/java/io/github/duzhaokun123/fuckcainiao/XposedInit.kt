@@ -11,7 +11,9 @@ import com.github.kyuubiran.ezxhelper.utils.getIdByName
 import com.github.kyuubiran.ezxhelper.utils.getObjectAs
 import com.github.kyuubiran.ezxhelper.utils.hookAfter
 import com.github.kyuubiran.ezxhelper.utils.hookBefore
+import com.github.kyuubiran.ezxhelper.utils.invokeMethodAutoAs
 import com.github.kyuubiran.ezxhelper.utils.loadClass
+import com.github.kyuubiran.ezxhelper.utils.loadClassOrNull
 import de.robv.android.xposed.IXposedHookLoadPackage
 import de.robv.android.xposed.callbacks.XC_LoadPackage
 
@@ -73,5 +75,16 @@ class XposedInit : IXposedHookLoadPackage {
             .hookAfter {
                 it.thisObject.getObjectAs<View>("mLogisticRedPacketViewStub").visibility = View.GONE
             }
+
+        loadClassOrNull("com.cainiao.wireless.homepage.v9.HomeHeaderSection")
+            ?.findMethod { name == "processHeaderData" }
+            ?.hookAfter {
+                val dataArray = it.args[0] // com.alibaba.fastjson.JSONArray
+                val size = dataArray.invokeMethodAutoAs<Int>("size")!!
+                for (i in (size - 1) downTo 1) {
+                    dataArray.invokeMethodAutoAs<Any>("remove", i)
+                }
+            }
+
     }
 }
