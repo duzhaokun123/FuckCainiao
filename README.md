@@ -13,9 +13,10 @@ https://github.com/Xposed-Modules-Repo/io.github.duzhaokun123.fuckcainiao
 
 ## 效果
 
-|             前              |            后             |
-|:--------------------------:|:------------------------:|
-| ![before](arts/before.png) | ![after](arts/after.png) |
+|              前               |             后              |
+|:----------------------------:|:--------------------------:|
+|  ![before](arts/before.png)  |  ![after](arts/after.png)  |
+| ![before2](arts/before2.png) | ![after2](arts/after2.png) |
 
 ## Thanks
 
