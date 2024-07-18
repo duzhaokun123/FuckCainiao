@@ -1,16 +1,16 @@
 package io.github.duzhaokun123.fuckcainiao
 
 import android.app.Activity
+import android.graphics.Color
+import android.os.Build
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import com.github.kyuubiran.ezxhelper.init.EzXHelperInit
-import com.github.kyuubiran.ezxhelper.utils.Log
 import com.github.kyuubiran.ezxhelper.utils.findAllMethods
 import com.github.kyuubiran.ezxhelper.utils.findField
 import com.github.kyuubiran.ezxhelper.utils.findMethod
 import com.github.kyuubiran.ezxhelper.utils.getIdByName
-import com.github.kyuubiran.ezxhelper.utils.getObject
 import com.github.kyuubiran.ezxhelper.utils.getObjectAs
 import com.github.kyuubiran.ezxhelper.utils.getObjectOrNull
 import com.github.kyuubiran.ezxhelper.utils.hookAfter
@@ -19,9 +19,10 @@ import com.github.kyuubiran.ezxhelper.utils.invokeMethodAutoAs
 import com.github.kyuubiran.ezxhelper.utils.loadClass
 import com.github.kyuubiran.ezxhelper.utils.loadClassOrNull
 import de.robv.android.xposed.IXposedHookLoadPackage
+import de.robv.android.xposed.IXposedHookZygoteInit
 import de.robv.android.xposed.callbacks.XC_LoadPackage
 
-class XposedInit : IXposedHookLoadPackage {
+class XposedInit : IXposedHookLoadPackage, IXposedHookZygoteInit {
     companion object {
         val TAG = "FuckCainiao"
     }
@@ -40,6 +41,12 @@ class XposedInit : IXposedHookLoadPackage {
                         getChildAt(1).visibility = View.GONE
                         getChildAt(2).visibility = View.GONE
                     }
+                activity.window.apply {
+                    navigationBarColor = Color.rgb(0x1a, 0x1a, 0x1a)
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                        navigationBarDividerColor = Color.rgb(0x1a, 0x1a, 0x1a)
+                    }
+                }
             }
 
         loadClass("com.cainiao.wireless.cubex.mvvm.view.CubeXLinearLayoutFragment")
@@ -98,5 +105,9 @@ class XposedInit : IXposedHookLoadPackage {
                     data.javaClass.findField { name == "tagIconList" }.set(data, arrayListOf<Any>())
                 }
             }
+    }
+
+    override fun initZygote(startupParam: IXposedHookZygoteInit.StartupParam) {
+        EzXHelperInit.initZygote(startupParam)
     }
 }
