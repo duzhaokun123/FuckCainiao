@@ -5,10 +5,14 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import com.github.kyuubiran.ezxhelper.init.EzXHelperInit
+import com.github.kyuubiran.ezxhelper.utils.Log
 import com.github.kyuubiran.ezxhelper.utils.findAllMethods
+import com.github.kyuubiran.ezxhelper.utils.findField
 import com.github.kyuubiran.ezxhelper.utils.findMethod
 import com.github.kyuubiran.ezxhelper.utils.getIdByName
+import com.github.kyuubiran.ezxhelper.utils.getObject
 import com.github.kyuubiran.ezxhelper.utils.getObjectAs
+import com.github.kyuubiran.ezxhelper.utils.getObjectOrNull
 import com.github.kyuubiran.ezxhelper.utils.hookAfter
 import com.github.kyuubiran.ezxhelper.utils.hookBefore
 import com.github.kyuubiran.ezxhelper.utils.invokeMethodAutoAs
@@ -86,5 +90,13 @@ class XposedInit : IXposedHookLoadPackage {
                 }
             }
 
+        loadClassOrNull("com.cainiao.wireless.homepage.view.widget.PackageTimeLineDecorateView")
+            ?.findMethod { name == "setData" }
+            ?.hookBefore {
+                val data = it.args[0] ?: return@hookBefore
+                if (data.getObjectOrNull("tagIconList") != null) {
+                    data.javaClass.findField { name == "tagIconList" }.set(data, arrayListOf<Any>())
+                }
+            }
     }
 }
