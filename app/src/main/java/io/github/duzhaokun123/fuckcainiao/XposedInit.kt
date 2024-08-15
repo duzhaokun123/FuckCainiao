@@ -113,11 +113,12 @@ class XposedInit : IXposedHookLoadPackage, IXposedHookZygoteInit {
                 }
             }
 
-//        loadClass("com.cainiao.wireless.homepage.view.widget.bottom.NewBottomFloatBanner")
-//            .findAllMethods { true }
-//            .hookBefore {
-//                Log.d("${it.method.name}")
-//            }
+        loadClass("com.cainiao.wireless.homepage.view.widget.bottom.NewBottomFloatBanner")
+            .findMethod { name == "init" }
+            .hookBefore {
+                Log.d("NewBottomFloatBanner init")
+                it.result = null
+            }
 
         val class_fastJSONArray = loadClass("com.alibaba.fastjson.JSONArray")
         loadClass("com.cainiao.wireless.cubex.mvvm.adapter.DXRecyclerViewAdapter")
@@ -132,7 +133,7 @@ class XposedInit : IXposedHookLoadPackage, IXposedHookZygoteInit {
                     Log.d("$guoguo_new_my_settings_item")
                     val aboutFuckCainiao = guoguo_new_my_settings_item.invokeMethod("clone")!!.apply {
                         this as MutableMap<String, Any>
-                        this["adUtArgs"] = "xxx"
+                        this["adUtArgs"] = "xxx" // 改这么多也许没必要 但是它工作
                         this["utLdArgs"] = "xxx"
                         this["id"] = "114514"
                         this["materialId"] = "114514"
@@ -177,6 +178,13 @@ class XposedInit : IXposedHookLoadPackage, IXposedHookZygoteInit {
                         }
                         .show()
                 }
+            }
+
+        loadClass("com.taobao.cainiao.logistic.ui.view.component.LogisticDetailTANX_BannerView")
+            .findMethod { paramCount == 1 && parameterTypes[0] == class_LdAdsCommonEntity }
+            .hookBefore {
+                Log.d("LogisticDetailTANX_BannerView hook")
+                it.args[0] = null
             }
     }
 
