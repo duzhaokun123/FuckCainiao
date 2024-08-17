@@ -81,11 +81,11 @@ class XposedInit : IXposedHookLoadPackage, IXposedHookZygoteInit {
                 activity.finish()
             }
 
+        val class_OnFetchTabListener = loadClass("com.cainiao.wireless.recommend.CNRecommendView\$OnFetchTabListener")
         loadClass("com.cainiao.wireless.recommend.CNRecommendView")
             .findMethod { name == "initView" }
-            .hookAfter {
-                val viewGroup = it.thisObject as ViewGroup
-                viewGroup.findViewById<View>(getIdByName("recommend_view_root", viewGroup.context)).visibility = View.GONE
+            .hookBefore {
+                (it.thisObject as View).visibility = View.GONE
             }
 
         loadClass("com.taobao.cainiao.logistic.ui.newview.LogisticDetailTemplateFragment")
@@ -120,7 +120,6 @@ class XposedInit : IXposedHookLoadPackage, IXposedHookZygoteInit {
                 it.result = null
             }
 
-        val class_fastJSONArray = loadClass("com.alibaba.fastjson.JSONArray")
         loadClass("com.cainiao.wireless.cubex.mvvm.adapter.DXRecyclerViewAdapter")
             .findMethod { name == "setData" }
             .hookBefore {
