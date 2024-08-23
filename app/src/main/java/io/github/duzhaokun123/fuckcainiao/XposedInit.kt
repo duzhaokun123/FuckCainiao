@@ -7,7 +7,6 @@ import android.graphics.Color
 import android.net.Uri
 import android.os.Build
 import android.view.View
-import android.view.ViewGroup
 import android.widget.LinearLayout
 import com.github.kyuubiran.ezxhelper.init.EzXHelperInit
 import com.github.kyuubiran.ezxhelper.utils.Log
@@ -19,6 +18,7 @@ import com.github.kyuubiran.ezxhelper.utils.getObjectAs
 import com.github.kyuubiran.ezxhelper.utils.getObjectOrNull
 import com.github.kyuubiran.ezxhelper.utils.hookAfter
 import com.github.kyuubiran.ezxhelper.utils.hookBefore
+import com.github.kyuubiran.ezxhelper.utils.hookReturnConstant
 import com.github.kyuubiran.ezxhelper.utils.invokeMethod
 import com.github.kyuubiran.ezxhelper.utils.invokeMethodAutoAs
 import com.github.kyuubiran.ezxhelper.utils.loadClass
@@ -74,12 +74,17 @@ class XposedInit : IXposedHookLoadPackage, IXposedHookZygoteInit {
                 it.args[0] = null
             }
 
-        loadClass("com.cainiao.wireless.homepage.view.activity.WelcomeActivity")
-            .findAllMethods { name == "onCreate" }
+        val class_WelcomeActivity = loadClass("com.cainiao.wireless.homepage.view.activity.WelcomeActivity")
+        class_WelcomeActivity.findAllMethods { name == "onCreate" }
             .hookBefore {
                 val activity = it.thisObject as Activity
-                activity.finish()
+                if (activity.intent.getBooleanExtra("isHotLaunch", false)) {
+                    activity.finish()
+                }
             }
+
+        class_WelcomeActivity.findAllMethods { name == "requestMamaAndRtbSplash" }
+            .hookReturnConstant(false)
 
         val class_OnFetchTabListener = loadClass("com.cainiao.wireless.recommend.CNRecommendView\$OnFetchTabListener")
         loadClass("com.cainiao.wireless.recommend.CNRecommendView")
