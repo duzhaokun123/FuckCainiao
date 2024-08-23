@@ -7,7 +7,6 @@ import android.graphics.Color
 import android.net.Uri
 import android.os.Build
 import android.view.View
-import android.view.ViewGroup
 import android.widget.LinearLayout
 import com.github.kyuubiran.ezxhelper.init.EzXHelperInit
 import com.github.kyuubiran.ezxhelper.utils.Log
@@ -19,6 +18,7 @@ import com.github.kyuubiran.ezxhelper.utils.getObjectAs
 import com.github.kyuubiran.ezxhelper.utils.getObjectOrNull
 import com.github.kyuubiran.ezxhelper.utils.hookAfter
 import com.github.kyuubiran.ezxhelper.utils.hookBefore
+import com.github.kyuubiran.ezxhelper.utils.hookReturnConstant
 import com.github.kyuubiran.ezxhelper.utils.invokeMethod
 import com.github.kyuubiran.ezxhelper.utils.invokeMethodAutoAs
 import com.github.kyuubiran.ezxhelper.utils.loadClass
@@ -74,12 +74,17 @@ class XposedInit : IXposedHookLoadPackage, IXposedHookZygoteInit {
                 it.args[0] = null
             }
 
-        loadClass("com.cainiao.wireless.homepage.view.activity.WelcomeActivity")
-            .findAllMethods { name == "onCreate" }
+        val class_WelcomeActivity = loadClass("com.cainiao.wireless.homepage.view.activity.WelcomeActivity")
+        class_WelcomeActivity.findAllMethods { name == "onCreate" }
             .hookBefore {
                 val activity = it.thisObject as Activity
-                activity.finish()
+                if (activity.intent.getBooleanExtra("isHotLaunch", false)) {
+                    activity.finish()
+                }
             }
+
+        class_WelcomeActivity.findAllMethods { name == "requestMamaAndRtbSplash" }
+            .hookReturnConstant(false)
 
         val class_OnFetchTabListener = loadClass("com.cainiao.wireless.recommend.CNRecommendView\$OnFetchTabListener")
         loadClass("com.cainiao.wireless.recommend.CNRecommendView")
@@ -124,6 +129,12 @@ class XposedInit : IXposedHookLoadPackage, IXposedHookZygoteInit {
             .findMethod { name == "setData" }
             .hookBefore {
                 val data = it.args[0] as MutableList<Any>
+                data.removeIf { i ->
+                    // 我的-休闲娱乐
+                    i.toString().contains("\"group_id\":\"entertainment\"") ||
+                            // 我的底部banner
+                            i.toString().contains("\"group_type\":\"bottom_place_holder\"")
+                }
                 val last = data.last() as Map<String, Any>
                 val template = last["template"] as? Map<String, Any> ?: return@hookBefore
                 val name = template["name"] as? String ?: return@hookBefore
@@ -179,9 +190,9 @@ class XposedInit : IXposedHookLoadPackage, IXposedHookZygoteInit {
                 }
             }
 
-        loadClass("com.taobao.cainiao.logistic.ui.view.component.LogisticDetailTANX_BannerView")
-            .findMethod { paramCount == 1 && parameterTypes[0] == class_LdAdsCommonEntity }
-            .hookBefore {
+        loadClassOrNull("com.taobao.cainiao.logistic.ui.view.component.LogisticDetailTANX_BannerView")
+            ?.findMethod { paramCount == 1 && parameterTypes[0] == class_LdAdsCommonEntity }
+            ?.hookBefore {
                 Log.d("LogisticDetailTANX_BannerView hook")
                 it.args[0] = null
             }
