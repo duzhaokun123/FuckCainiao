@@ -184,9 +184,9 @@ class XposedInit : IXposedHookLoadPackage, IXposedHookZygoteInit {
                 }
             }
 
-        loadClass("com.taobao.cainiao.logistic.ui.view.component.LogisticDetailTANX_BannerView")
-            .findMethod { paramCount == 1 && parameterTypes[0] == class_LdAdsCommonEntity }
-            .hookBefore {
+        loadClassOrNull("com.taobao.cainiao.logistic.ui.view.component.LogisticDetailTANX_BannerView")
+            ?.findMethod { paramCount == 1 && parameterTypes[0] == class_LdAdsCommonEntity }
+            ?.hookBefore {
                 Log.d("LogisticDetailTANX_BannerView hook")
                 it.args[0] = null
             }
