@@ -129,6 +129,12 @@ class XposedInit : IXposedHookLoadPackage, IXposedHookZygoteInit {
             .findMethod { name == "setData" }
             .hookBefore {
                 val data = it.args[0] as MutableList<Any>
+                data.removeIf { i ->
+                    // 我的-休闲娱乐
+                    i.toString().contains("\"group_id\":\"entertainment\"") ||
+                            // 我的底部banner
+                            i.toString().contains("\"group_type\":\"bottom_place_holder\"")
+                }
                 val last = data.last() as Map<String, Any>
                 val template = last["template"] as? Map<String, Any> ?: return@hookBefore
                 val name = template["name"] as? String ?: return@hookBefore
