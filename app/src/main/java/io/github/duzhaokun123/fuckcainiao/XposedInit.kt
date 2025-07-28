@@ -30,10 +30,11 @@ import de.robv.android.xposed.callbacks.XC_LoadPackage
 
 class XposedInit : IXposedHookLoadPackage, IXposedHookZygoteInit {
     companion object {
-        val TAG = "FuckCainiao"
-        val URL_ABOUT_FUCK_CAINIAO = "guoguo://go/about_fuck_cainiao"
+        const val TAG = "FuckCainiao"
+        const val URL_ABOUT_FUCK_CAINIAO = "guoguo://go/about_fuck_cainiao"
     }
 
+    @Suppress("UNCHECKED_CAST")
     override fun handleLoadPackage(lpparam: XC_LoadPackage.LoadPackageParam) {
         if (lpparam.packageName != "com.cainiao.wireless") return
         EzXHelperInit.initHandleLoadPackage(lpparam)
@@ -86,7 +87,7 @@ class XposedInit : IXposedHookLoadPackage, IXposedHookZygoteInit {
         class_WelcomeActivity.findAllMethods { name == "requestMamaAndRtbSplash" }
             .hookReturnConstant(false)
 
-        val class_OnFetchTabListener = loadClass("com.cainiao.wireless.recommend.CNRecommendView\$OnFetchTabListener")
+//        val class_OnFetchTabListener = loadClass("com.cainiao.wireless.recommend.CNRecommendView\$OnFetchTabListener")
         loadClass("com.cainiao.wireless.recommend.CNRecommendView")
             .findMethod { name == "initView" }
             .hookBefore {
